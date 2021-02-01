@@ -1,3 +1,3 @@
 # LoKy
-The goal of this repository to provided a board to connect a Linky through LoraWan.
 
+- LoKy is an Open-source project which creates a LoRa end-device to connect with Linky meter in France. 
