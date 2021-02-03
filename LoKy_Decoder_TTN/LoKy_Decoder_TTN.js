@@ -1,6 +1,6 @@
 function LoKyDecode(bytes) {
     var data_types = {
-        0  : {'size': 2, 'index': 'VccTIC (in V)', 'divisor': 1		},        
+        0  : {'size': 2, 'index': 'VccTIC (in V)', 'divisor': 1000	},        
         1  : {'size': 5, 'index': 'HCHC (in KWh)', 'divisor': 1000	},
         2  : {'size': 5, 'index': 'HCHP (in KWh)', 'divisor': 1000	},
         3  : {'size': 2, 'index': 'PTEC'		 , 'divisor': 1		},

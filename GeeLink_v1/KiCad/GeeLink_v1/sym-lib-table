@@ -1,0 +1,5 @@
+(sym_lib_table
+  (lib (name RFM95W-rescue)(type Legacy)(uri "D:/OneDrive - Danang University of Technology/OneDrive/LoRa/G2Elab/Stage/Git/GeeLink/KiCad/RFM95W/RFM95W-rescue.lib")(options "")(descr ""))
+  (lib (name GeeLink-rescue)(type Legacy)(uri ${KIPRJMOD}/GeeLink-rescue.lib)(options "")(descr ""))
+  (lib (name GeeLink_v1-rescue)(type Legacy)(uri ${KIPRJMOD}/GeeLink_v1-rescue.lib)(options "")(descr ""))
+)
