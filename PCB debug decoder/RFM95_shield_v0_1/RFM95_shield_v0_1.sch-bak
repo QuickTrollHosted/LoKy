@@ -1,0 +1,104 @@
+EESchema Schematic File Version 4
+EELAYER 30 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L header:HEADER_M_2.54MM_1R7P_ST_AU_PTH P1
+U 1 1 60249194
+P 3220 2624
+F 0 "P1" H 3344 2564 40  0000 C CNN
+F 1 "H1" H 3342 2648 40  0000 C CNN
+F 2 "Header:HEADER_M_2.54MM_1R7P_ST_AU_PTH" H 3220 2624 60  0001 C CNN
+F 3 "" H 3220 2624 60  0000 C CNN
+	1    3220 2624
+	-1   0    0    -1  
+$EndComp
+Text Label 3370 2324 0    50   ~ 0
+GND
+Text Label 3370 2624 0    50   ~ 0
+3V3
+Text Label 3370 2724 0    50   ~ 0
+DIO0
+Text Label 3370 2824 0    50   ~ 0
+DIO1
+Text Label 3370 2924 0    50   ~ 0
+DIO2
+NoConn ~ 3370 2424
+NoConn ~ 3370 2524
+NoConn ~ 6000 2376
+Text Label 6000 2276 2    50   ~ 0
+GND
+$Comp
+L header:HEADER_M_2.54MM_1R8P_ST_AU_PTH P2
+U 1 1 6024B676
+P 6150 2626
+F 0 "P2" H 6228 2664 40  0000 L CNN
+F 1 "H2" H 6228 2588 40  0000 L CNN
+F 2 "Header:HEADER_M_2.54MM_1R8P_ST_AU_PTH" H 6150 2626 60  0001 C CNN
+F 3 "" H 6150 2626 60  0000 C CNN
+	1    6150 2626
+	1    0    0    -1  
+$EndComp
+Text Label 6000 2476 2    50   ~ 0
+RST
+Text Label 6000 2576 2    50   ~ 0
+NSS
+Text Label 6000 2676 2    50   ~ 0
+SCK
+Text Label 6000 2776 2    50   ~ 0
+MOSI
+Text Label 6000 2876 2    50   ~ 0
+MISO
+Text Label 6000 2976 2    50   ~ 0
+GND
+Text Label 4850 3204 3    50   ~ 0
+GND
+NoConn ~ 5250 2304
+NoConn ~ 5250 2604
+NoConn ~ 5250 2704
+NoConn ~ 5250 2504
+Text Label 4650 3204 3    50   ~ 0
+GND
+Text Label 4250 2604 2    50   ~ 0
+NSS
+Text Label 4250 2404 2    50   ~ 0
+MOSI
+Text Label 4250 2504 2    50   ~ 0
+MISO
+Text Label 4250 2304 2    50   ~ 0
+SCK
+Text Label 4750 3204 3    50   ~ 0
+GND
+Text Label 4250 2804 2    50   ~ 0
+RST
+Text Label 5250 3004 0    50   ~ 0
+DIO0
+Text Label 5250 2904 0    50   ~ 0
+DIO1
+Text Label 5250 2804 0    50   ~ 0
+DIO2
+Text Label 4750 2104 0    50   ~ 0
+3V3
+$Comp
+L RF_Module:RFM95W-868S2 U1
+U 1 1 60254BE6
+P 4750 2604
+F 0 "U1" H 4570 3168 50  0000 C CNN
+F 1 "RFM95" H 4478 3066 50  0000 C CNN
+F 2 "RF_Module:HOPERF_RFM9XW_SMD" H 1450 4254 50  0001 C CNN
+F 3 "https://www.hoperf.com/data/upload/portal/20181127/5bfcbea20e9ef.pdf" H 1450 4254 50  0001 C CNN
+	1    4750 2604
+	1    0    0    -1  
+$EndComp
+$EndSCHEMATC
