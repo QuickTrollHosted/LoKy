@@ -1,12 +1,12 @@
 function LoKyDecode(bytes) {
     var data_types = {
         0  : {'size': 2, 'index': 'VccTIC (in V)', 'divisor': 1000	},        
-        1  : {'size': 5, 'index': 'HCHC (in KWh)', 'divisor': 1000	},
-        2  : {'size': 5, 'index': 'HCHP (in KWh)', 'divisor': 1000	},
-        3  : {'size': 2, 'index': 'PTEC'		 , 'divisor': 1		},
-        4  : {'size': 2, 'index': 'IINST  (in A)', 'divisor': 1		},
-        5  : {'size': 3, 'index': 'PAPP  (in VA)', 'divisor': 1		},
-        6  : {'size': 5, 'index': 'BASE (in KWh)', 'divisor': 1000	},
+        4  : {'size': 5, 'index': 'HCHC (in KWh)', 'divisor': 1000	},
+        5  : {'size': 5, 'index': 'HCHP (in KWh)', 'divisor': 1000	},
+        6  : {'size': 2, 'index': 'PTEC'		 , 'divisor': 1		},
+        7  : {'size': 2, 'index': 'IINST  (in A)', 'divisor': 1		},
+        9  : {'size': 3, 'index': 'PAPP  (in VA)', 'divisor': 1		},
+
     };
 
 	function arrayToDecimal(stream, divisor) {
