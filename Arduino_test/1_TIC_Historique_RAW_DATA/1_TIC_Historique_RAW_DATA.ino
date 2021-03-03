@@ -1,16 +1,17 @@
 #include <SoftwareSerial.h>
 
-const uint8_t GeeLink_Rx = 4;
-const uint8_t GeeLink_Tx = 5;
+const uint8_t GeeLink_Rx = 6;
+const uint8_t GeeLink_Tx = 3;
 
 SoftwareSerial LinkyTIC(GeeLink_Rx, GeeLink_Tx);
 
 void setup() {
+  
 //  pinMode(6, OUTPUT);
 //  pinMode(4, OUTPUT);
 //  digitalWrite(6, HIGH);
 //  digitalWrite(4, LOW);
-  
+
   LinkyTIC.begin(1200);
   Serial.begin(9600);
   Serial.println("Salut...");
