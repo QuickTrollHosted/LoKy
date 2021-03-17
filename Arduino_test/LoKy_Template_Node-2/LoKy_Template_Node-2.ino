@@ -91,7 +91,7 @@ void onEvent (ev_t ev) {
       Serial.println(F("EV_TXCOMPLETE"));  
       Serial.println("");
       // Schedule next transmission
-      do_sleep(TX_INTERVAL);
+//      do_sleep(TX_INTERVAL);
       os_setTimedCallback(&sendjob, os_getTime()+sec2osticks(TX_INTERVAL), do_send);
 //      os_setCallback(&sendjob, do_send);
       break;
@@ -176,7 +176,7 @@ void do_send(osjob_t* j) {
 }
 
 void setup() {
-  while (!Serial);
+//  while (!Serial);
   Serial.begin(9600);
   TeleInfo(version);
   
