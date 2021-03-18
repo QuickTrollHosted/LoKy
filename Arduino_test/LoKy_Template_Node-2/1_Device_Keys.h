@@ -1,5 +1,6 @@
-/*  Device Node used for testing      Application ID : geelink
-  Activation Method OTAA              Device ID : node-1 */
+/*  Device ID : node-2
+ *  Application ID : loky-v0-1
+ *  Activation Method OTAA      */
 
 static const u1_t PROGMEM DEVEUI[8] = // LSB format.
 { 0x80, 0x88, 0x03, 0xA9, 0xC3, 0x37, 0x93, 0x00 }

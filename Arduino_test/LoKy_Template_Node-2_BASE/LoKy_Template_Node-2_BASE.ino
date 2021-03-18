@@ -9,9 +9,7 @@ int ISOUSC;             // intensité souscrite
 int IINST;              // intensité instantanée en A
 int IMAX;               // intensité maxi en A
 int PAPP;               // puissance apparente en VA
-//unsigned long HCHC;     // compteur Heures Creuses en W
-//unsigned long HCHP;     // compteur Heures Pleines en W
-unsigned long BASE;
+unsigned long BASE;     // index BASE en W 
 String PTEC;            // Régime actuel : HPJB, HCJB, HPJW, HCJW, HPJR, HCJR
 String ADCO;            // adresse compteur
 String OPTARIF;         // option tarifaire
@@ -21,20 +19,7 @@ boolean teleInfoReceived;
 
 char chksum(char *buff, uint8_t len);
 boolean handleBuffer(char *bufferTeleinfo, int sequenceNumnber);
-char version[5] = "V0.02";
-
-const int T_charge_SupCapa = 15; // Time to charge SupCapa
-const long Vset_TIC = 3456; // The voltage set for the supercapacitor
-
-// ------------------------------------------------- //
-// Check if the SuperCapacitor is not full charged yet, sleep MCU
-// ------------------------------------------------- //
-void Check_SupCapa() {
-  long value_readVCC = readVcc();
-  Serial.print("SupCapa's Voltage = "); Serial.print(VccTIC/1000);Serial.println(" Volts");
-  while (readVcc() < Vset_TIC)
-  do_sleep(T_charge_SupCapa);
-}
+char version[5] = "V0.01";
 
 // ------------------------------------------------- //
 // Read the Voltage supply regulated from TIC
@@ -144,10 +129,8 @@ void do_send(osjob_t* j) {
     
     Serial.print("VccTIC = "); Serial.print(VccTIC/1000); Serial.println(" V");
     int     vc = VccTIC;
-//    uint32_t hc = HCHC;
-//    uint32_t hp = HCHP;
-    uint32_t be = BASE;
     uint8_t  is = IINST;
+    uint32_t be = BASE;
     uint16_t pa = PAPP;
 
     unsigned char loky_data[16];
@@ -155,16 +138,16 @@ void do_send(osjob_t* j) {
     loky_data[1] = vc >> 8;
     loky_data[2] = vc & 0xFF;
 
-    loky_data[3] = 0x08;        //Select data_type = 8 --> BASE, size 5 bytes from TTN
-    loky_data[4] = be >> 32;
-    loky_data[5] = be >> 24;
-    loky_data[6] = be >> 16;
-    loky_data[7] = be >> 8;
-    loky_data[8] = be & 0xFF;
-
-    loky_data[9] = 0x7;        //Select data_type = 7 --> IINST, size 2 bytes from TTN
-    loky_data[10] = is >> 8;
-    loky_data[11] = is & 0xFF;
+    loky_data[3] = 0x7;        //Select data_type = 7 --> IINST, size 2 bytes from TTN
+    loky_data[4] = is >> 8;
+    loky_data[5] = is & 0xFF;
+    
+    loky_data[6] = 0x08;       //Select data_type = 8 --> BASE, size 5 bytes from TTN
+    loky_data[7] = be >> 32;
+    loky_data[8] = be >> 24;
+    loky_data[9] = be >> 16;
+    loky_data[10] = be >> 8;
+    loky_data[11] = be & 0xFF;
 
     loky_data[12] = 0x9;        //Select data_type = 9 --> PAPP, size 3 bytes from TTN
     loky_data[13] = pa >> 16;
@@ -180,7 +163,7 @@ void do_send(osjob_t* j) {
 }
 
 void setup() {
-  while (!Serial);
+//  while (!Serial);
   Serial.begin(9600);
   TeleInfo(version);
   
