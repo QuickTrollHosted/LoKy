@@ -1,4 +1,3 @@
-
 const uint8_t pin_LokyRx = 6;
 const uint8_t pin_LokyTx = 3; // Not used but reserved !!! (can connect to GND)
 
@@ -12,31 +11,16 @@ void TeleInfo(String version) {
   pgmVersion = version;
   
   // variables initializations
-  ADCO = "000000000000";
+  ADCO = "061764415139";
   OPTARIF = "----";
   ISOUSC = 0;
-//  HCHC = 0L;  // compteur Heures Creuses en W
-//  HCHP = 0L;  // compteur Heures Pleines en W
-  BASE = 0L;  // index BASE en W
+  BASE = 0L;  // BASE en W
   PTEC = "----";    // Régime actuel : HPJB, HCJB, HPJW, HCJW, HPJR, HCJR
   IINST = 0;        // intensité instantanée en A
   IMAX = 0;         // intensité maxi en A
   PAPP = 0;         // puissance apparente en VA  
   HHPHC = '-';
   MOTDETAT = "------";
-
-/*
-18:22:28.005 -> ADCO 061861335804 D
-18:22:28.171 -> OPTARIF BASE 0
-18:22:28.306 -> ISOUSC 45 ?
-18:22:28.438 -> BASE 007020250 [
-18:22:28.590 -> PTEC TH.. $
-18:22:28.691 -> IINST 011 Y
-18:22:28.791 -> IMAX 090 H
-18:22:28.875 -> PAPP 02590 1
-18:22:29.022 -> HHPHC A ,
-18:22:29.122 -> MOTDETAT 000000 B
-*/
 }
 
 // ------------------------------------------------- //
@@ -110,43 +94,8 @@ boolean handleBuffer(char *bufferTeleinfo, int sequenceNumnber) {
   boolean sequenceIsOK;
 
   switch(sequenceNumnber) {
-/*  
   case 1:
-    if (sequenceIsOK = bufferTeleinfo[0]=='A')  ADCO = String(resultString);
-    break;
-  case 2:
-    if (sequenceIsOK = bufferTeleinfo[0]=='O')  OPTARIF = String(resultString);
-    break;
-  case 3:
-    if (sequenceIsOK = bufferTeleinfo[1]=='S')  ISOUSC = atol(resultString);
-    break;
-  case 4:
-    if (sequenceIsOK = bufferTeleinfo[3]=='C')  HCHC = atol(resultString);
-    break;
-  case 5:
-    if (sequenceIsOK = bufferTeleinfo[3]=='P')  HCHP = atol(resultString);
-    break;
-  case 6:
-    if (sequenceIsOK = bufferTeleinfo[1]=='T')  PTEC = String(resultString);
-    break;
-  case 7:
-    if (sequenceIsOK = bufferTeleinfo[1]=='I')  IINST =atol(resultString);
-    break;
-  case 8:
-    if (sequenceIsOK = bufferTeleinfo[1]=='M')  IMAX =atol(resultString);
-    break;
-  case 9:
-    if (sequenceIsOK = bufferTeleinfo[1]=='A')  PAPP =atol(resultString);
-    break;
-  case 10:
-    if (sequenceIsOK = bufferTeleinfo[1]=='H')  HHPHC = resultString[0];
-    break;
-  case 11:
-    if (sequenceIsOK = bufferTeleinfo[1]=='O')  MOTDETAT = String(resultString);
-    break;
-*/
-  case 1:
-    if (sequenceIsOK = bufferTeleinfo[0]=='A')  ADCO = String(resultString);
+    if (sequenceIsOK = bufferTeleinfo[1]=='D')  ADCO = String(resultString);
     break;
   case 2:
     if (sequenceIsOK = bufferTeleinfo[0]=='O')  OPTARIF = String(resultString);
@@ -161,13 +110,13 @@ boolean handleBuffer(char *bufferTeleinfo, int sequenceNumnber) {
     if (sequenceIsOK = bufferTeleinfo[1]=='T')  PTEC = String(resultString);
     break;
   case 6:
-    if (sequenceIsOK = bufferTeleinfo[1]=='I')  IINST = atol(resultString);
+    if (sequenceIsOK = bufferTeleinfo[1]=='I')  IINST =atol(resultString);
     break;
   case 7:
-    if (sequenceIsOK = bufferTeleinfo[1]=='M')  IMAX = atol(resultString);
+    if (sequenceIsOK = bufferTeleinfo[1]=='M')  IMAX =atol(resultString);
     break;
   case 8:
-    if (sequenceIsOK = bufferTeleinfo[1]=='A')  PAPP = atol(resultString);
+    if (sequenceIsOK = bufferTeleinfo[1]=='A')  PAPP =atol(resultString);
     break;
   case 9:
     if (sequenceIsOK = bufferTeleinfo[1]=='H')  HHPHC = resultString[0];
@@ -193,34 +142,4 @@ char chksum(char *buff, uint8_t len)  {
     sum = sum + buff[i];
   sum = (sum & 0x3F) + 0x20;
   return(sum);
-}
-
-
-void displayTeleInfo()  {  
-//  Serial.print(F(" "));
-//  Serial.println();
-  Serial.print(F("ADCO "));
-  Serial.println(ADCO);
-  Serial.print(F("OPTARIF "));
-  Serial.println(OPTARIF);
-  Serial.print(F("ISOUSC "));
-  Serial.println(ISOUSC);
-//  Serial.print(F("HCHC "));
-//  Serial.println(HCHC);
-//  Serial.print(F("HCHP "));
-//  Serial.println(HCHP);
-  Serial.print(F("BASE "));
-  Serial.println(BASE);
-  Serial.print(F("PTEC "));
-  Serial.println(PTEC);
-  Serial.print(F("IINST "));
-  Serial.println(IINST);
-  Serial.print(F("IMAX "));
-  Serial.println(IMAX);
-  Serial.print(F("PAPP "));
-  Serial.println(PAPP);
-  Serial.print(F("HHPHC "));
-  Serial.println(HHPHC);
-  Serial.print(F("MOTDETAT "));
-  Serial.println(MOTDETAT);   
 }
