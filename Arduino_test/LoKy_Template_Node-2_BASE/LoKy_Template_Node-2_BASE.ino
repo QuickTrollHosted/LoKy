@@ -167,7 +167,8 @@ void setup() {
   Serial.begin(9600);
   TeleInfo(version);
   
-  Serial.println("**--------------------------------**");
+  Serial.println("**--------------------------------**");  
+  do_sleep(60);
   Serial.println(F("            LoKy starting"));
   delay(100);
   
