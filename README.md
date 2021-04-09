@@ -1,3 +1,3 @@
 # LoKy
 
-- LoKy is an Open-source project which creates a LoRa end-device to connect with Linky meter in France. 
+- LoKy is an Open-source project which creates a LoRaWAN end-device to connect with Linky meter in France. 

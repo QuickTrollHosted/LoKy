@@ -1,6 +1,6 @@
 # LoKy_LPP Introduction
 
-LoKyLPP is a format modified by HO Vu Duy Bao from IoT platform [Cayenne](https://mydevices.com/cayenne/features/).
+LoKyLPP is a payload format modified by HO Vu Duy Bao from IoT platform [Cayenne](https://mydevices.com/cayenne/features/).
 It is used to send electrical data in a packed format to [The Things Network](https://www.thethingsnetwork.org).
 
 ## Dependencies
