@@ -1,0 +1,4 @@
+(fp_lib_table
+  (lib (name LoKy-PCB-v1-1)(type KiCad)(uri "D:/Nextcloud/Téléchargement/LoKy-main(2)/LoKy-main/LoKy-PCB-v1-1.pretty")(options "")(descr ""))
+  (lib (name PC814)(type KiCad)(uri "D:/Nextcloud/Téléchargement/LoKy-main(2)/LoKy-main/KiCAD-Lib/PC814.pretty")(options "")(descr ""))
+)
