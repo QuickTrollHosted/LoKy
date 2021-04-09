@@ -1,3 +1,4 @@
 (sym_lib_table
   (lib (name LoKy-PCB-v2)(type Legacy)(uri ${KIPRJMOD}/LoKy-PCB-v2.lib)(options "")(descr ""))
+  (lib (name Logo_g2elab)(type Legacy)(uri D:/Nextcloud/Logo_g2elab.lib)(options "")(descr ""))
 )
