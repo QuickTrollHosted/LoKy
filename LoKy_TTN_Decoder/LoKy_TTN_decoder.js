@@ -3,7 +3,7 @@ function LoKyDecode(bytes) {
         0  : {'size': 2, 'index': 'VccTIC (in V)', 'divisor': 1000	},        
         4  : {'size': 5, 'index': 'HCHC (in KWh)', 'divisor': 1000	},
         5  : {'size': 5, 'index': 'HCHP (in KWh)', 'divisor': 1000	},
-        6  : {'size': 2, 'index': 'PTEC'		 , 'divisor': 1		},
+        // 6  : {'size': 2, 'index': 'PTEC'		 , 'divisor': 1		},
         7  : {'size': 2, 'index': 'IINST  (in A)', 'divisor': 1		},
         8  : {'size': 5, 'index': 'BASE (in KWh)', 'divisor': 1000	},
         9  : {'size': 3, 'index': 'PAPP  (in VA)', 'divisor': 1		},
