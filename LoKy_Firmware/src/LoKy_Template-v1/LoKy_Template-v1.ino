@@ -8,8 +8,8 @@
 SoftwareSerial* LoKyTIC;
 
 /* Linky option tarifaire  */
-#define Linky_HCHCP true   
-//#define Linky_BASE true 
+//#define Linky_HCHP true   
+#define Linky_BASE true 
 
 static osjob_t sendjob;
 static float VccTIC;
@@ -49,7 +49,7 @@ long readVcc() {
 }
 
 // ---------------------------------------------- //
-//    Update new values from TIC to the next TX 
+//   Update new values from TIC for the next TX 
 // ---------------------------------------------- //
 void updateParameters() {
   Serial.println("Updating new values for LoKy_payload");
@@ -139,7 +139,7 @@ void do_send(osjob_t* j) {
     uint8_t  is = IINST;
     uint16_t pa = PAPP;
     
-    #ifdef Linky_HCHCP  
+    #ifdef Linky_HCHP  
     uint32_t hc = HCHC;
     uint32_t hp = HCHP;
     unsigned char loky_data[22];
@@ -150,26 +150,27 @@ void do_send(osjob_t* j) {
     unsigned char loky_data[16];
     #endif
 
-    loky_data[0] = 0x0;         //Select data_type = 0 --> VccTIC   (2 bytes)
+    // LoKy payload arrangement for sending to TTN
+    loky_data[0] = 0x0;         //data_type = 0 --> VccTIC   (2 bytes)
     loky_data[1] = vc >> 8;
     loky_data[2] = vc & 0xFF;
-    loky_data[3] = 0x7;         //Select data_type = 7 --> IINST    (2 bytes)
+    loky_data[3] = 0x7;         //data_type = 7 --> IINST    (2 bytes)
     loky_data[4] = is >> 8;
     loky_data[5] = is & 0xFF;
-    loky_data[6] = 0x9;         //Select data_type = 9 --> PAPP     (2 bytes)
+    loky_data[6] = 0x9;         //data_type = 9 --> PAPP     (3 bytes)
     loky_data[7] = pa >> 16;
     loky_data[8] = pa >> 8;
     loky_data[9] = pa & 0xFF;
   
-    #ifdef Linky_HCHCP  
-    loky_data[10] = 0x04;        //Select data_type = 4 --> HCHP     (5 bytes)
+    #ifdef Linky_HCHP  
+    loky_data[10] = 0x04;       //data_type = 4 --> HCHP     (5 bytes)
     loky_data[11] = hc >> 32;
     loky_data[12] = hc >> 24;
     loky_data[13] = hc >> 16;
     loky_data[14] = hc >> 8;
     loky_data[15] = hc & 0xFF;
 
-    loky_data[16]  = 0x5;        //Select data_type = 5 --> HCHC     (5 bytes)
+    loky_data[16]  = 0x5;       //data_type = 5 --> HCHC     (5 bytes)
     loky_data[17] = hp >> 32;
     loky_data[18] = hp >> 24;
     loky_data[19] = hp >> 16;
@@ -179,7 +180,7 @@ void do_send(osjob_t* j) {
 
       
     #ifdef Linky_BASE
-    loky_data[10] = 0x08;         //Select data_type = 8 --> BASE, size 5 bytes from TTN
+    loky_data[10] = 0x08;       //data_type = 8 --> BASE     (5 bytes)
     loky_data[11] = be >> 32;
     loky_data[12] = be >> 24;
     loky_data[13] = be >> 16;

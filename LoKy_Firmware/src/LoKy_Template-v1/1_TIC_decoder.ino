@@ -15,7 +15,7 @@ void TeleInfo(String version) {
   OPTARIF = "----";
   ISOUSC = 0;
   
-  #ifdef Linky_HCHCP
+  #ifdef Linky_HCHP
   HCHC = 0L;
   HCHP = 0L;
   #endif
@@ -103,7 +103,7 @@ boolean handleBuffer(char *bufferTeleinfo, int sequenceNumnber) {
 
   switch(sequenceNumnber) {
   
-  #ifdef Linky_HCHCP
+  #ifdef Linky_HCHP
   case 1:
     if (sequenceIsOK = bufferTeleinfo[0]=='A')  ADCO = String(resultString);
     break;
@@ -205,7 +205,7 @@ void displayTeleInfo()  {
   Serial.print(F("ISOUSC "));
   Serial.println(ISOUSC);
   
-  #ifdef Linky_HCHCP
+  #ifdef Linky_HCHP
   Serial.print(F("HCHC "));
   Serial.println(HCHC);
   Serial.print(F("HCHP "));
