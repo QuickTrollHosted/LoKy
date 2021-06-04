@@ -1,13 +1,15 @@
 function LoKyDecode(bytes) {
     var data_types = {
-        0  : {'size': 2, 'index': 'VccTIC (in V)', 'divisor': 1000	},        
+        0  : {'size': 2, 'index': 'VccTIC (in V)', 'divisor': 1000	}, 
+        // 1  : {'size': x, 'index': 'X (in x)', 'divisor': x },
+        // 2  : {'size': x, 'index': 'X (in x)', 'divisor': x },
+        // 3  : {'size': x, 'index': 'X (in x)', 'divisor': x },
         4  : {'size': 5, 'index': 'HCHC (in KWh)', 'divisor': 1000	},
         5  : {'size': 5, 'index': 'HCHP (in KWh)', 'divisor': 1000	},
-        // 6  : {'size': 2, 'index': 'PTEC'		 , 'divisor': 1		},
+        6  : {'size': 2, 'index': 'PTEC'		 , 'divisor': 1		},
         7  : {'size': 2, 'index': 'IINST  (in A)', 'divisor': 1		},
         8  : {'size': 5, 'index': 'BASE (in KWh)', 'divisor': 1000	},
         9  : {'size': 3, 'index': 'PAPP  (in VA)', 'divisor': 1		},
-
     };
 
 	function arrayToDecimal(stream, divisor) {
@@ -23,7 +25,6 @@ function LoKyDecode(bytes) {
 
 	var data = [];
 	var i = 0;
-		
 		while (i < bytes.length) {
 	    	var d_type = bytes[i++];
 	    	if (typeof data_types[d_type] == 'undefined') {
@@ -40,13 +41,11 @@ function LoKyDecode(bytes) {
 	    			 });
 	    	i += type.size;
 		}
-
 		return data;
 }
 
-// To use with TTN
-function Decoder(bytes, fPort) {
-    
+// To use with TTS
+function Decoder(bytes, fPort) {  
     // flat output (like original decoder):
     var response = {};
     LoKyDecode(bytes, 0).forEach(function(field) {
