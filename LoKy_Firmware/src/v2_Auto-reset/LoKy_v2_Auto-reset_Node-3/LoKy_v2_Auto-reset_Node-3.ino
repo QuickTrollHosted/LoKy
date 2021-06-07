@@ -8,12 +8,15 @@
 SoftwareSerial* LoKyTIC;
 
 /* Linky option tarifaire  */
-//#define Linky_HCHP true   
-#define Linky_BASE true 
+#define Linky_HCHP true   
+//#define Linky_BASE true 
+
+/* Set time to reset LoKy  */
+#define T_LoKy_reset 0.1 //in hour(s)
 
 static osjob_t sendjob;
 static float VccTIC;
-char HHPHC;               
+char HHPHC;
 int ISOUSC;               // intensité souscrite  
 int IINST;                // intensité instantanée    en A
 int PAPP;                 // puissance apparente      en VA
@@ -30,7 +33,7 @@ boolean teleInfoReceived;
 
 char chksum(char *buff, uint8_t len);
 boolean handleBuffer(char *bufferTeleinfo, int sequenceNumnber);
-char version[5] = "V0.01";
+char version[5] = "V2.00";
 
 // ---------------------------------------------- //
 //      Read the Voltage regulated from TIC
@@ -53,6 +56,8 @@ long readVcc() {
 // ---------------------------------------------- //
 void updateParameters() {
   Serial.println("Updating new values for LoKy_payload");
+  VccTIC = (int)(readVcc()); // returns VccTIC in mVolt for LoKy decoder
+  Serial.print("VccTIC = "); Serial.print(VccTIC/1000); Serial.println(" V");
   LoKyTIC->begin(1200);  // Important!!! -> RESTART LoKyTIC 
   teleInfoReceived = readTeleInfo(true);
   if (teleInfoReceived) { displayTeleInfo();}
@@ -97,9 +102,8 @@ void onEvent (ev_t ev) {
       Serial.println(F("EV_TXCOMPLETE"));  
       Serial.println("");
       // Schedule next transmission
-//      do_sleep(TX_INTERVAL);
+      do_sleep(TX_INTERVAL);
       os_setTimedCallback(&sendjob, os_getTime()+sec2osticks(TX_INTERVAL), do_send);
-//      os_setCallback(&sendjob, do_send);
       break;
       
     case EV_LOST_TSYNC:
@@ -133,8 +137,6 @@ void do_send(osjob_t* j) {
   if (LMIC.opmode & OP_TXRXPEND) {Serial.println(F("OP_TXRXPEND, not sending"));}
   else {
     updateParameters();
-    VccTIC = (int)(readVcc()); // returns VccTIC in mVolt for LoKy decoder
-    Serial.print("VccTIC = "); Serial.print(VccTIC/1000); Serial.println(" V");
     int      vc = VccTIC;    
     uint8_t  is = IINST;
     uint16_t pa = PAPP;
@@ -202,11 +204,9 @@ void do_send(osjob_t* j) {
 void LMiC_Startup() {
   os_init();
   // Reset the MAC state.
-  LMIC_reset(); LMIC_setLinkCheckMode(1); LMIC_setAdrMode(1);
-  
+  LMIC_reset(); LMIC_setLinkCheckMode(1); LMIC_setAdrMode(1);  
   // Increase window time for clock accuracy problem
   LMIC_setClockError(MAX_CLOCK_ERROR * 1 / 100);
-
   // Join the network, sending will be started after the event "Joined"
   LMIC_startJoining();
 }
@@ -217,8 +217,9 @@ void setup() {
   TeleInfo(version);    // LoKyTIC init
   
   Serial.println("**--------------------------------**");
-  Serial.println(F("            LoKy starting"        ));
+  Serial.println(F("        LoKy (re)starting"        ));
   delay(100);
+//  Check_SupCapa();
   
   updateParameters();   // Data for the first Tx
   LMiC_Startup();       // LMiC init
@@ -228,10 +229,14 @@ void setup() {
 
 }
 
-//** Fixed Main LOOP **//
-void loop() {os_runloop_once();}
-// Do NOT interfere this LOOP!!!
+void(* resetFunc) (void) = 0; //declare reset function at address 0 - MUST BE ABOVE LOOP
 
+//** Fixed Main LOOP **//
+void loop() {
+  if ( millis()  >= (T_LoKy_reset*3600000) ) resetFunc(); //Reset every T_LoKy_reset hours
+  os_runloop_once();
+  }
+  
 const int T_charge_SupCapa = 15; // Time to charge SupCapa
 const long Vset_TIC = 3300; // The voltage set for the supercapacitor
 // ---------------------------------------------- //
@@ -239,7 +244,7 @@ const long Vset_TIC = 3300; // The voltage set for the supercapacitor
 // ---------------------------------------------- // 
 void Check_SupCapa() {
   long value_readVCC = readVcc();
-  Serial.print("Voltage read from TIC = "); Serial.print(VccTIC/1000);Serial.println(" Volts");
+  Serial.print("Checking voltage read from TIC... : "); Serial.print(VccTIC/1000);Serial.println(" Volts");
   while (readVcc() < Vset_TIC)
   do_sleep(T_charge_SupCapa);
 }
