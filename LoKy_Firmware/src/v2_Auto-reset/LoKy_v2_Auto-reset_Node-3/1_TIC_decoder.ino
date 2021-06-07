@@ -196,14 +196,13 @@ char chksum(char *buff, uint8_t len)  {
 //          Debug TIC frame from Linky
 // ---------------------------------------------- //
 void displayTeleInfo()  {  
-  Serial.print(F(" "));
-  Serial.println();
+  Serial.println(F(" "));
   Serial.print(F("ADCO "));
   Serial.println(ADCO);
   Serial.print(F("OPTARIF "));
   Serial.println(OPTARIF);
-  Serial.print(F("ISOUSC "));
-  Serial.println(ISOUSC);
+//  Serial.print(F("ISOUSC "));
+//  Serial.println(ISOUSC);
   
   #ifdef Linky_HCHP
   Serial.print(F("HCHC "));
@@ -221,12 +220,12 @@ void displayTeleInfo()  {
   Serial.println(PTEC);
   Serial.print(F("IINST "));
   Serial.println(IINST);
-  Serial.print(F("IMAX "));
-  Serial.println(IMAX);
+//  Serial.print(F("IMAX "));
+//  Serial.println(IMAX);
   Serial.print(F("PAPP "));
   Serial.println(PAPP);
-  Serial.print(F("HHPHC "));
-  Serial.println(HHPHC);
-  Serial.print(F("MOTDETAT "));
-  Serial.println(MOTDETAT);   
+//  Serial.print(F("HHPHC "));
+//  Serial.println(HHPHC);
+//  Serial.print(F("MOTDETAT "));
+//  Serial.println(MOTDETAT);   
 }

@@ -55,13 +55,16 @@ long readVcc() {
 //   Update new values from TIC for the next TX 
 // ---------------------------------------------- //
 void updateParameters() {
-  Serial.println("Updating new values for LoKy_payload");
+  Serial.println("-----");
+  Serial.println(" * * * Updating new values for LoKy_payload");
   VccTIC = (int)(readVcc()); // returns VccTIC in mVolt for LoKy decoder
   Serial.print("VccTIC = "); Serial.print(VccTIC/1000); Serial.println(" V");
   LoKyTIC->begin(1200);  // Important!!! -> RESTART LoKyTIC 
   teleInfoReceived = readTeleInfo(true);
   if (teleInfoReceived) { displayTeleInfo();}
 }
+
+void(* resetFunc) (void) = 0; //declare reset function at address 0 - MUST BE ABOVE LOOP
 
 // ---------------------------------------------- //
 //              LoRaWAN events (LMiC)
@@ -85,10 +88,10 @@ void onEvent (ev_t ev) {
       Serial.println(F("EV_JOINING"));
       break;      
     case EV_JOINED:
-//      setDataRate();
       Serial.println(F("EV_JOINED"));
       LMIC_setLinkCheckMode(0);
       break;
+      
     case EV_JOIN_FAILED:
       Serial.println(F("EV_JOIN_FAILED"));
       LMiC_Startup(); //Reset LMIC and retry
@@ -99,13 +102,23 @@ void onEvent (ev_t ev) {
       break;
       
     case EV_TXCOMPLETE:
-      Serial.println(F("EV_TXCOMPLETE"));  
-      Serial.println("");
+      Serial.println(F("EV_TXCOMPLETE"));
+      if (LMIC.txrxFlags & TXRX_ACK)
+        Serial.println(F("Received ack"));
+      if (LMIC.dataLen) {
+        Serial.print(F("Received "));
+        Serial.print(LMIC.dataLen);
+        Serial.println(F(" bytes."));
+      }
+      delay(50);
       // Schedule next transmission
+//      setDataRate();
       do_sleep(TX_INTERVAL);
-      os_setTimedCallback(&sendjob, os_getTime()+sec2osticks(TX_INTERVAL), do_send);
-      break;
+      os_setCallback(&sendjob, do_send);
       
+      if (millis() >= (T_LoKy_reset*3600000)) resetFunc(); //Reset every T_LoKy_reset hours
+      break;
+       
     case EV_LOST_TSYNC:
       Serial.println(F("EV_LOST_TSYNC"));
       break;
@@ -171,7 +184,6 @@ void do_send(osjob_t* j) {
     loky_data[13] = hc >> 16;
     loky_data[14] = hc >> 8;
     loky_data[15] = hc & 0xFF;
-
     loky_data[16]  = 0x5;       //data_type = 5 --> HCHC     (5 bytes)
     loky_data[17] = hp >> 32;
     loky_data[18] = hp >> 24;
@@ -179,8 +191,7 @@ void do_send(osjob_t* j) {
     loky_data[20] = hp >> 8;
     loky_data[21] = hp & 0xFF;  
     #endif
-
-      
+   
     #ifdef Linky_BASE
     loky_data[10] = 0x08;       //data_type = 8 --> BASE     (5 bytes)
     loky_data[11] = be >> 32;
@@ -212,30 +223,19 @@ void LMiC_Startup() {
 }
 
 void setup() {
-//  while (!Serial);
   Serial.begin(9600);
   TeleInfo(version);    // LoKyTIC init
-  
   Serial.println("**--------------------------------**");
   Serial.println(F("        LoKy (re)starting"        ));
   delay(100);
 //  Check_SupCapa();
-  
   updateParameters();   // Data for the first Tx
   LMiC_Startup();       // LMiC init
-
-  // Start job (sending automatically starts OTAA too)
   do_send(&sendjob);
-
 }
 
-void(* resetFunc) (void) = 0; //declare reset function at address 0 - MUST BE ABOVE LOOP
-
 //** Fixed Main LOOP **//
-void loop() {
-  if ( millis()  >= (T_LoKy_reset*3600000) ) resetFunc(); //Reset every T_LoKy_reset hours
-  os_runloop_once();
-  }
+void loop() { os_runloop_once();}
   
 const int T_charge_SupCapa = 15; // Time to charge SupCapa
 const long Vset_TIC = 3300; // The voltage set for the supercapacitor

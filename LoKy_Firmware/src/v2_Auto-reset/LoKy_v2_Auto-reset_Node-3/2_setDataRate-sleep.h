@@ -14,7 +14,7 @@ void do_sleep(unsigned int sleepyTime) {
   unsigned int twos = ((sleepyTime % 8) % 4) / 2;
   unsigned int ones = ((sleepyTime % 8) % 4) % 2;
 
-  Serial.print(F("LoKy sleeps in "));Serial.print(sleepyTime);Serial.println(F(" seconds. "));
+  Serial.print(F("LoKy sleeps in "));Serial.print(sleepyTime);Serial.println(F(" seconds. "));delay(100);
   for ( int x = 0; x < eights; x++) {LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_OFF);}
   for ( int x = 0; x < fours; x++)  {LowPower.powerDown(SLEEP_4S, ADC_OFF, BOD_OFF);}
   for ( int x = 0; x < twos; x++)   {LowPower.powerDown(SLEEP_2S, ADC_OFF, BOD_OFF);}
@@ -25,7 +25,7 @@ void do_sleep(unsigned int sleepyTime) {
 // ---------------------------------------------- //
 //           Set DataRate for LoRaWAN
 // ---------------------------------------------- //
-unsigned int TX_INTERVAL = 15;/* Schedule TX every TX_INTERVAL seconds */
+unsigned int TX_INTERVAL = 25;/* Schedule TX every TX_INTERVAL seconds */
 void setDataRate() {
   switch (LMIC.datarate) {
     case DR_SF12:
