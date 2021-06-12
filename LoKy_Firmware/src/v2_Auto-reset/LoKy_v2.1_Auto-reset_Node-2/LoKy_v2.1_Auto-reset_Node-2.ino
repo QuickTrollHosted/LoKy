@@ -8,8 +8,8 @@
 SoftwareSerial* LoKyTIC;
 
 /* Linky option tarifaire  */
-#define Linky_HCHP true   
-//#define Linky_BASE true 
+//#define Linky_HCHP true   
+#define Linky_BASE true 
 
 /* Set time to reset LoKy  */
 #define T_LoKy_reset 6 //in hour(s)
@@ -20,10 +20,18 @@ char HHPHC;
 int ISOUSC;               // intensité souscrite  
 int IINST;                // intensité instantanée    en A
 int PAPP;                 // puissance apparente      en VA
+
+#ifdef Linky_HCHP 
 unsigned long HCHC;       // compteur Heures Creuses  en W
 unsigned long HCHP;       // compteur Heures Pleines  en W
-unsigned long HP_n;  
-unsigned long BASE;       // index BASE               en W 
+unsigned long HP_n;       // Update 12/06
+#endif
+
+#ifdef Linky_BASE
+unsigned long BASE;       // index BASE               en W
+unsigned long BA_n;       // Update 12/06
+#endif
+
 String PTEC;              // période tarif en cours
 String ADCO;              // adresse du compteur
 String OPTARIF;           // option tarifaire
@@ -150,6 +158,8 @@ void do_send(osjob_t* j) {
   // Check if there is not a current TX/RX job running
   if (LMIC.opmode & OP_TXRXPEND) {Serial.println(F("OP_TXRXPEND, not sending"));}
   else {
+    // Update 12/06
+    #ifdef Linky_HCHP 
     HP_n = HCHP;
     updateParameters();
     while (HCHP == HP_n || ADCO == 000000000000){
@@ -157,6 +167,19 @@ void do_send(osjob_t* j) {
       Serial.println(" * Re-read Linky...");
       updateParameters();
       }
+    #endif
+
+    // Update 12/06
+    #ifdef Linky_BASE 
+    BA_n = BASE;
+    updateParameters();
+    while (BASE == BA_n || ADCO == 000000000000){
+      LoKyTIC->end();
+      Serial.println(" * Re-read Linky...");
+      updateParameters();
+      }
+    #endif
+    
     if (teleInfoReceived) { displayTeleInfo();}
     int vc = VccTIC;    
     uint8_t is = IINST;
