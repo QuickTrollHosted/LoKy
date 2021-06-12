@@ -24,7 +24,6 @@ int PAPP;                 // puissance apparente      en VA
 #ifdef Linky_HCHP 
 unsigned long HCHC;       // compteur Heures Creuses  en W
 unsigned long HCHP;       // compteur Heures Pleines  en W
-unsigned long HP_pre;       // Update 12/06
 #endif
 
 #ifdef Linky_BASE
@@ -159,10 +158,11 @@ void do_send(osjob_t* j) {
   if (LMIC.opmode & OP_TXRXPEND) {Serial.println(F("OP_TXRXPEND, not sending"));}
   else {
     // Update 12/06
-    #ifdef Linky_HCHP 
-    HP_pre = HCHP;
+    #ifdef Linky_HCHP
+    unsigned long HP_pre = HCHP;       // Update 12/06
+    unsigned long HC_pre = HCHC;       // Update 12/06
     updateParameters();
-    while ((HCHP == HP_pre) || ADCO == 000000000000){
+    while (((HCHP <= HP_pre) && (HCHC<=HC_pre))|| ADCO == 000000000000){
       LoKyTIC->end();
       Serial.println(" * Re-read Linky...");
       updateParameters();
