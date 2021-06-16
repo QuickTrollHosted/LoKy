@@ -2,7 +2,6 @@
 #include <hal/hal.h>
 #include <SPI.h>
 #include "LowPower.h"
-#include "2_setDataRate-sleep.h"
 #include "3_Device_Keys.h"
 #include <SoftwareSerial.h>
 SoftwareSerial* LoKyTIC;
@@ -10,6 +9,8 @@ SoftwareSerial* LoKyTIC;
 /* Linky option tarifaire  */
 #define Linky_HCHP true   
 //#define Linky_BASE true 
+
+unsigned int TX_INTERVAL = 25;// Schedule TX every TX_INTERVAL seconds 
 
 /* Set time to reset LoKy  */
 #define T_LoKy_reset 0.05 //in hour(s)
@@ -20,9 +21,17 @@ char HHPHC;
 int ISOUSC;               // intensité souscrite  
 int IINST;                // intensité instantanée    en A
 int PAPP;                 // puissance apparente      en VA
+
+#ifdef Linky_HCHP 
 unsigned long HCHC;       // compteur Heures Creuses  en W
 unsigned long HCHP;       // compteur Heures Pleines  en W
-unsigned long BASE;       // index BASE               en W 
+#endif
+
+#ifdef Linky_BASE
+unsigned long BASE;       // index BASE               en W
+unsigned long BA_pre;       // Update 12/06
+#endif
+
 String PTEC;              // période tarif en cours
 String ADCO;              // adresse du compteur
 String OPTARIF;           // option tarifaire
@@ -33,7 +42,8 @@ boolean teleInfoReceived;
 
 char chksum(char *buff, uint8_t len);
 boolean handleBuffer(char *bufferTeleinfo, int sequenceNumnber);
-char version[5] = "V2.00";
+
+void(* resetFunc) (void) = 0; //declare reset function at address 0 - MUST BE ABOVE LOOP
 
 // ---------------------------------------------- //
 //      Read the Voltage regulated from TIC
@@ -56,15 +66,13 @@ long readVcc() {
 // ---------------------------------------------- //
 void updateParameters() {
   Serial.println("-----");
-  Serial.println(" * * * Updating new values for LoKy_payload");
+  Serial.println("Updating new LoKy_payload . . .");
   VccTIC = (int)(readVcc()); // returns VccTIC in mVolt for LoKy decoder
   Serial.print("VccTIC = "); Serial.print(VccTIC/1000); Serial.println(" V");
   LoKyTIC->begin(1200);  // Important!!! -> RESTART LoKyTIC 
-  teleInfoReceived = readTeleInfo(true);
-  if (teleInfoReceived) { displayTeleInfo();}
+  teleInfoReceived = readTeleInfo();
+  LoKyTIC->end(); // Important!!! -> STOP LoKyTIC to send packet.
 }
-
-void(* resetFunc) (void) = 0; //declare reset function at address 0 - MUST BE ABOVE LOOP
 
 // ---------------------------------------------- //
 //              LoRaWAN events (LMiC)
@@ -112,11 +120,13 @@ void onEvent (ev_t ev) {
       }
       delay(50);
       // Schedule next transmission
-//      setDataRate();
-      do_sleep(TX_INTERVAL);
-      os_setCallback(&sendjob, do_send);
+//      setDataRate(); // Use for ADR
+      //Reset every T_LoKy_reset hours
+      if (millis() >= (T_LoKy_reset*3600000)) resetFunc();
+//      do_sleep(TX_INTERVAL);
+//      os_setCallback(&sendjob, do_send);
+      os_setTimedCallback(&sendjob, os_getTime() + ms2osticks(TX_INTERVAL*1000), do_send);
       
-      if (millis() >= (T_LoKy_reset*3600000)) resetFunc(); //Reset every T_LoKy_reset hours
       break;
        
     case EV_LOST_TSYNC:
@@ -142,6 +152,30 @@ void onEvent (ev_t ev) {
   }
 }
 
+void check_newValues() {
+
+  #ifdef Linky_HCHP
+  unsigned long HP_pre = HCHP;       // Update 12/06
+  unsigned long HC_pre = HCHC;       // Update 12/06
+  updateParameters();
+  while (((HCHP <= HP_pre) && (HCHC<=HC_pre))|| ADCO == 000000000000){
+    LoKyTIC->end();
+    Serial.println(" * Re-read Linky to have new value !");
+    updateParameters();
+  }
+  #endif
+
+  #ifdef Linky_BASE 
+  BA_pre = BASE;
+  updateParameters();
+  while (BASE <= BA_pre || ADCO == 000000000000){
+    LoKyTIC->end();
+    Serial.println(" * Re-read Linky...");
+    updateParameters();
+  }
+  #endif
+}
+
 // ---------------------------------------------- //
 //      Send the encrypted LoKy packet to TTN
 // ---------------------------------------------- //
@@ -149,9 +183,11 @@ void do_send(osjob_t* j) {
   // Check if there is not a current TX/RX job running
   if (LMIC.opmode & OP_TXRXPEND) {Serial.println(F("OP_TXRXPEND, not sending"));}
   else {
-    updateParameters();
-    int      vc = VccTIC;    
-    uint8_t  is = IINST;
+    check_newValues();
+    if (teleInfoReceived) { displayTeleInfo();}
+    
+    int vc = VccTIC;    
+    uint8_t is = IINST;
     uint16_t pa = PAPP;
     
     #ifdef Linky_HCHP  
@@ -159,7 +195,7 @@ void do_send(osjob_t* j) {
     uint32_t hp = HCHP;
     unsigned char loky_data[22];
     #endif
-  
+
     #ifdef Linky_BASE
     uint32_t be = BASE;
     unsigned char loky_data[16];
@@ -204,7 +240,7 @@ void do_send(osjob_t* j) {
     LMIC_setTxData2(1, loky_data, sizeof(loky_data), 0);
     Serial.println(F("LoKy packet queued!!!"));
     
-    LoKyTIC->end(); // Important!!! -> STOP LoKyTIC to send packet.
+//    LoKyTIC->end(); // Important!!! -> STOP LoKyTIC to send packet.
   }
   // Next TX is scheduled after TX_COMPLETE event.
 }
@@ -224,27 +260,14 @@ void LMiC_Startup() {
 
 void setup() {
   Serial.begin(9600);
-  TeleInfo(version);    // LoKyTIC init
-  Serial.println("**--------------------------------**");
+  TeleInfo();    // LoKyTIC init
+  Serial.println("*-_______________________________-*");
   Serial.println(F("        LoKy (re)starting"        ));
   delay(100);
 //  Check_SupCapa();
-  updateParameters();   // Data for the first Tx
   LMiC_Startup();       // LMiC init
-  do_send(&sendjob);
+  do_send(&sendjob);    // OTAA start
 }
 
 //** Fixed Main LOOP **//
-void loop() { os_runloop_once();}
-  
-const int T_charge_SupCapa = 15; // Time to charge SupCapa
-const long Vset_TIC = 3300; // The voltage set for the supercapacitor
-// ---------------------------------------------- //
-//    Sleep LoKy to charge the SuperCapacitor
-// ---------------------------------------------- // 
-void Check_SupCapa() {
-  long value_readVCC = readVcc();
-  Serial.print("Checking voltage read from TIC... : "); Serial.print(VccTIC/1000);Serial.println(" Volts");
-  while (readVcc() < Vset_TIC)
-  do_sleep(T_charge_SupCapa);
-}
+void loop() {os_runloop_once();}

@@ -5,11 +5,9 @@ const uint8_t LoKy_Tx = 3;
 // ---------------------------------------------- //
 //        Basic constructor for LoKyTIC
 // ---------------------------------------------- //
-void TeleInfo(String version) {
+void TeleInfo() {
   LoKyTIC = new SoftwareSerial(LoKy_Rx, LoKy_Tx);
-  LoKyTIC->begin(1200);
-  pgmVersion = version;
-  
+
   // variables initializations
   ADCO = "000000000000";
   OPTARIF = "----";
@@ -33,9 +31,10 @@ void TeleInfo(String version) {
 }
 
 // ---------------------------------------------- //
-//            TIC frame capture from 
+//           TIC frame capture from Linky
 // ---------------------------------------------- //
-boolean readTeleInfo(bool readTIC)  {
+//boolean readTeleInfo(bool TIC_state)  {
+boolean readTeleInfo()  {
 #define startFrame  0x02
 #define endFrame    0x03
 #define startLine   0x0A
@@ -196,9 +195,8 @@ char chksum(char *buff, uint8_t len)  {
 //          Debug TIC frame from Linky
 // ---------------------------------------------- //
 void displayTeleInfo()  {  
-  Serial.println(F(" "));
-  Serial.print(F("ADCO "));
-  Serial.println(ADCO);
+//  Serial.print(F("ADCO "));
+//  Serial.println(ADCO);
   Serial.print(F("OPTARIF "));
   Serial.println(OPTARIF);
 //  Serial.print(F("ISOUSC "));

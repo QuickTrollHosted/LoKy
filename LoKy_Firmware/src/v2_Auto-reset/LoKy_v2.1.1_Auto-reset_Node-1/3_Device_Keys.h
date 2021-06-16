@@ -1,4 +1,4 @@
-/* Device ID : node-2      *
+/* Device ID : node-1      *
 /  Application ID : loky   */
 
 static const u1_t PROGMEM APPEUI[8] = { // LSB format
@@ -7,7 +7,7 @@ static const u1_t PROGMEM APPEUI[8] = { // LSB format
 void os_getArtEui (u1_t* buf) {memcpy_P(buf, APPEUI, 8);}
 
 static const u1_t PROGMEM DEVEUI[8] = { // LSB format
-0x32, 0x6F, 0x4E, 0x5F, 0x79, 0x4B, 0x6F, 0x4C
+0x31, 0x6F, 0x4E, 0x5F, 0x79, 0x4B, 0x6F, 0x4C
 };
 void os_getDevEui (u1_t* buf) {memcpy_P(buf, DEVEUI, 8);}
 

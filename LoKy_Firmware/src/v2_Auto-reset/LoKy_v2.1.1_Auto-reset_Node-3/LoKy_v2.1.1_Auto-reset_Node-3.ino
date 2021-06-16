@@ -2,17 +2,18 @@
 #include <hal/hal.h>
 #include <SPI.h>
 #include "LowPower.h"
-#include "2_setDataRate-sleep.h"
 #include "3_Device_Keys.h"
 #include <SoftwareSerial.h>
 SoftwareSerial* LoKyTIC;
 
 /* Linky option tarifaire  */
-//#define Linky_HCHP true   
-#define Linky_BASE true 
+#define Linky_HCHP true   
+//#define Linky_BASE true 
+
+unsigned int TX_INTERVAL = 25;/* Schedule TX every TX_INTERVAL seconds */
 
 /* Set time to reset LoKy  */
-#define T_LoKy_reset 6 //in hour(s)
+#define T_LoKy_reset 0.05 //in hour(s)
 
 static osjob_t sendjob;
 static float VccTIC;
@@ -164,9 +165,9 @@ void do_send(osjob_t* j) {
     updateParameters();
     while (((HCHP <= HP_pre) && (HCHC<=HC_pre))|| ADCO == 000000000000){
       LoKyTIC->end();
-      Serial.println(" * Re-read Linky...");
+      Serial.println(" * Re-read Linky to have new value !");
       updateParameters();
-      }
+    }
     #endif
 
     // Update 12/06
@@ -177,10 +178,11 @@ void do_send(osjob_t* j) {
       LoKyTIC->end();
       Serial.println(" * Re-read Linky...");
       updateParameters();
-      }
+    }
     #endif
     
     if (teleInfoReceived) { displayTeleInfo();}
+    
     int vc = VccTIC;    
     uint8_t is = IINST;
     uint16_t pa = PAPP;
@@ -190,7 +192,7 @@ void do_send(osjob_t* j) {
     uint32_t hp = HCHP;
     unsigned char loky_data[22];
     #endif
-  
+
     #ifdef Linky_BASE
     uint32_t be = BASE;
     unsigned char loky_data[16];
@@ -266,14 +268,3 @@ void setup() {
 
 //** Fixed Main LOOP **//
 void loop() {os_runloop_once();}
-  
-const int T_charge_SupCapa = 15; // Time to charge SupCapa
-const long Vset_TIC = 3300; // The voltage set for the supercapacitor
-// ---------------------------------------------- //
-//    Sleep LoKy to charge the SuperCapacitor
-// ---------------------------------------------- // 
-void Check_SupCapa() {
-  long value_readVCC = readVcc();
-  Serial.print("Checking voltage read from TIC... : "); Serial.print(VccTIC/1000);Serial.println(" Volts");
-  while (readVcc() < Vset_TIC) do_sleep(T_charge_SupCapa);
-}

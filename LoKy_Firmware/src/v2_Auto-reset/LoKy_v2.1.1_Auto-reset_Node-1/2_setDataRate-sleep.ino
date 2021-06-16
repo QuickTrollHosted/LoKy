@@ -25,7 +25,6 @@ void do_sleep(unsigned int sleepyTime) {
 // ---------------------------------------------- //
 //           Set DataRate for LoRaWAN
 // ---------------------------------------------- //
-unsigned int TX_INTERVAL = 25; // Schedule TX every TX_INTERVAL seconds
 void setDataRate() {
   switch (LMIC.datarate) {
     case DR_SF12:

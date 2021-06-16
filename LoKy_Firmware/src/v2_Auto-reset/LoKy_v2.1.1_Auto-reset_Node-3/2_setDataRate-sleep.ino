@@ -25,7 +25,6 @@ void do_sleep(unsigned int sleepyTime) {
 // ---------------------------------------------- //
 //           Set DataRate for LoRaWAN
 // ---------------------------------------------- //
-unsigned int TX_INTERVAL = 25;/* Schedule TX every TX_INTERVAL seconds */
 void setDataRate() {
   switch (LMIC.datarate) {
     case DR_SF12:
@@ -64,4 +63,15 @@ void setDataRate() {
       Serial.println(LMIC.datarate); TX_INTERVAL = 600;
       break;
   }
+}
+
+const int T_charge_SupCapa = 15; // Time to charge SupCapa
+const long Vset_TIC = 3300; // The voltage set for the supercapacitor
+// ---------------------------------------------- //
+//    Sleep LoKy to charge the SuperCapacitor
+// ---------------------------------------------- // 
+void Check_SupCapa() {
+  long value_readVCC = readVcc();
+  Serial.print("Checking voltage read from TIC... : "); Serial.print(VccTIC/1000);Serial.println(" Volts");
+  while (readVcc() < Vset_TIC) do_sleep(T_charge_SupCapa);
 }
