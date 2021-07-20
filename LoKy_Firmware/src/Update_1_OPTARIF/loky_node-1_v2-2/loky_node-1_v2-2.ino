@@ -43,8 +43,8 @@ long readVcc() {
   while (bit_is_set(ADCSRA, ADSC));
   result = ADCL;
   result |= ADCH << 8;
-  result = 1126400L / result; // Back-calculate Vcc in mV
-  return result;
+  result = 1126400L / result;
+  return result; // Return Vcc in mV
 }
 // ---------------------------------------------- //
 
@@ -131,8 +131,9 @@ void onEvent (ev_t ev) {
 // ---------------------------------------------- //
 
 // ---------------------------------------------- //
-//              Verify LoKy Payload
+//              Verify LoKy Payload               //
 void check_newValues() {
+  Serial.println("");
   Serial.println("-----");
   Serial.println(" * Verify new payload ");
   unsigned long HP_pre = HCHP;
@@ -159,7 +160,7 @@ void check_newValues() {
 // ---------------------------------------------- //
 
 // ---------------------------------------------- //
-//      Send the encrypted LoKy packet to TTN
+//      Send the encrypted LoKy packet to TTN     //
 void do_send(osjob_t* j) {
   // Check if there is not a current TX/RX job running
   if (LMIC.opmode & OP_TXRXPEND) {Serial.println(F("OP_TXRXPEND, not sending"));}
@@ -483,6 +484,7 @@ void LMiC_Startup() {
 void setup() {
   Serial.begin(9600);
   TeleInfo();    // LoKyTIC init
+  Serial.println("");
   Serial.println("*-_______________________________-*");
   Serial.println(F("      .::LoKy (re)starting::."        ));
   delay(100);
