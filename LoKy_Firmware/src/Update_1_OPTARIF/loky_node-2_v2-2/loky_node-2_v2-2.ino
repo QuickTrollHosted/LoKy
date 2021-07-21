@@ -142,17 +142,17 @@ void check_newValues() {
   
   updateParameters();
   
-  while (((HCHP <= HP_pre) && (HCHC<=HC_pre)) || ADCO == 000000000000){
+  while (((HCHP <= HP_pre) && (HCHC<=HC_pre) && (BASE <= BA_pre)) || ADCO == 000000000000){
     LoKyTIC->end();
     Serial.println(" * LoKyTIC HCHP frame updating...");
     updateParameters();  continue;
   }
-
-  while (BASE < BA_pre || ADCO == 000000000000){
+/*
+  while ( || ADCO == 000000000000){
     LoKyTIC->end();
     Serial.println(" * LoKyTIC BASE frame updating...");
     updateParameters();  continue;
-  }
+  }*/
   Serial.println("==> Finished checking, display info:");
 
   if (teleInfoReceived) { displayTeleInfo();}
