@@ -6,7 +6,7 @@
 SoftwareSerial* LoKyTIC;
 
 // Schedule the transmission every 
-unsigned int TX_INTERVAL = 90; //seconds 
+unsigned int TX_INTERVAL = 90; //seconds
 
 // Set duration to reset LoKy  
 #define T_LoKy_reset 6 //in hour(s)
@@ -142,17 +142,18 @@ void check_newValues() {
   
   updateParameters();
   
-  while (((HCHP <= HP_pre) && (HCHC<=HC_pre)) || ADCO == 000000000000){
+  while (((HCHP <= HP_pre) && (HCHC<=HC_pre) && (BASE <= BA_pre)) || ADCO == 000000000000){
     LoKyTIC->end();
-    Serial.println(" * LoKyTIC HCHP frame updating...");
+    Serial.println(" * LoKyTIC frame updating...");
     updateParameters();  continue;
   }
-
+/*
   while (BASE < BA_pre || ADCO == 000000000000){
     LoKyTIC->end();
     Serial.println(" * LoKyTIC BASE frame updating...");
     updateParameters();  continue;
   }
+*/  
   Serial.println("==> Finished checking, display info:");
 
   if (teleInfoReceived) { displayTeleInfo();}
