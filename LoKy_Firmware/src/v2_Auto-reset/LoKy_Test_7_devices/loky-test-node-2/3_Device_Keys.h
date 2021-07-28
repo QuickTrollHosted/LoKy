@@ -7,7 +7,7 @@ static const u1_t PROGMEM APPEUI[8] = { // LSB format
 ;void os_getArtEui (u1_t* buf) {  memcpy_P(buf, APPEUI, 8);}
 
 static const u1_t PROGMEM DEVEUI[8] = { // LSB format
-0x32, 0x30, 0x4E, 0x20, 0x79, 0x4B, 0x6F, 0x4C
+0xXX, 0xXX, 0xXX, 0xXX, 0xXX, 0xXX, 0xXX, 0xXX
 }
 ;void os_getDevEui (u1_t* buf) {  memcpy_P(buf, DEVEUI, 8);}
 
