@@ -12,3 +12,16 @@ This work is licensed under a
 # LoKy
 
 - LoKy is an Open-source project which creates a LoRaWAN end-device to connect with Linky meter in France. 
+
+This End-device was created by Ferrari Jérôme and Ho Vu Duy Bao for CNRS/UGA/G-INP – G2ELAB
+
+![CNRS-logo][]
+![G2elab-logo][]
+![UGA-logo][]
+![GINP-logo][]
+
+
+[GINP-logo]: https://www.grenoble-inp.fr/uas/alias1/LOGO/Grenoble+INP+-+%C3%89tablissement+%28couleur%2C+RVB%2C+120px%29.png
+[CNRS-logo]: https://www.cnrs.fr/themes/custom/cnrs/logo.svg
+[G2elab-logo]: https://g2elab.grenoble-inp.fr/uas/alias31/LOGO/G2Elab-logo.jpg
+[UGA-logo]:https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1D0TxrJin49KlU9Oo263OgjsanU9vKQZhKJ9LZsMjxxggnCEKO7NDsN-rW6CEXGJbLEE&usqp=CAU
