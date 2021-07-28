@@ -12,6 +12,7 @@ This work is licensed under a
 # LoKy
 
 - LoKy is an Open-source project which creates a LoRaWAN end-device to connect with Linky meter in France. 
+- The most recent firmware is V4
 
 This End-device was created by Ferrari Jérôme and Ho Vu Duy Bao for CNRS/UGA/G-INP – G2ELAB
 
